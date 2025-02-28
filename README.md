@@ -1,1 +1,1 @@
-# SkineCareMachineLearning
+# SkinCareMachineLearning
