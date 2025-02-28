@@ -4,6 +4,7 @@ import numpy as np
 from PIL import Image
 from datetime import datetime
 import os
+from pathlib import Path
 import random
 
 # Set page configuration
@@ -762,27 +763,37 @@ with st.expander("⚠️ Demo Disclaimer"):
         </div>
     """, unsafe_allow_html=True)
 
-# Info box
-try:
-    image_path = 'Image/OnePager.jpeg'
-    if not os.path.exists(image_path):
-        st.error(f"Image file not found at: {image_path}")
-    else:
-        import base64
+# Get the directory containing the script
+SCRIPT_DIR = Path(__file__).parent.resolve()
+IMAGE_DIR = SCRIPT_DIR / "Image"
+
+# Function to load image as base64
+def get_image_base64(image_name):
+    try:
+        image_path = IMAGE_DIR / image_name
+        if not image_path.exists():
+            st.error(f"Image not found: {image_name}")
+            return ""
         
-        def get_image_base64(image_path):
-            with open(image_path, "rb") as img_file:
-                return base64.b64encode(img_file.read()).decode()
-                
-        img_base64 = get_image_base64(image_path)
+        import base64
+        with open(image_path, "rb") as image_file:
+            return base64.b64encode(image_file.read()).decode()
+    except Exception as e:
+        st.error(f"Error loading image: {str(e)}")
+        return ""
+
+try:
+    image_name = 'OnePager.jpeg'
+    img_base64 = get_image_base64(image_name)
+    if img_base64:
         st.markdown(f"""
             <div class='info-box'>
                 <img src="data:image/jpeg;base64,{img_base64}" 
-                     style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                style="width: 100%; height: auto; border-radius: 10px;">
             </div>
         """, unsafe_allow_html=True)
 except Exception as e:
-    st.error(f"Error loading image: {e}")
+    st.error(f"Error displaying image: {str(e)}")
 
 # Simulated ingredient extraction
 def extract_ingredients(product_name):
