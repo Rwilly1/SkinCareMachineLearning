@@ -851,3 +851,4 @@ def analyze_ingredients(ingredients_list):
                         warnings.append(f"⚠️ {ingredient1.title()} + {ingredient2.title()}: {compatibility}")
     
     return results, warnings
+
